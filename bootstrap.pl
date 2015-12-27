@@ -4,7 +4,7 @@ use lib 'ext/File__Find/lib/';
 use lib 'ext/Shell__Command/lib/';
 use Shell::Command;
 
-sub MAIN(Str :$prefix is copy) {
+sub MAIN(Str :$prefix is copy, Bool :$notests) {
     say '==> Bootstrapping Panda';
 
     # prevent a lot of expensive dynamic lookups
@@ -62,7 +62,8 @@ sub MAIN(Str :$prefix is copy) {
     );
 
     my $prefix_str = $prefix ?? "--prefix=$prefix" !! '';
-    shell "$*EXECUTABLE --ll-exception bin/panda --force $prefix_str install $*CWD";
+    my $notests_str = $notests ?? "--notests" !! '';
+    shell "$*EXECUTABLE --ll-exception bin/panda --force $prefix_str $notests_str install $*CWD";
     say "==> Please make sure that $prefix/bin is in your PATH";
 
     unlink "$panda-base/projects.json";
